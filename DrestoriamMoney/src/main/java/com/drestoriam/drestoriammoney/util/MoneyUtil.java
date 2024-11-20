@@ -29,8 +29,8 @@ public class MoneyUtil {
         ItemMeta thirdDenomItemMeta = firstDenom.getItemMeta();
         ItemMeta fourthDenomItemMeta = firstDenom.getItemMeta();
 
-        firstDenomItemMeta.setItemName(ChatColor.of("#A19D94") + plugin.getConfig().getString("money.name1"));
-        secondDenomItemMeta.setItemName(ChatColor.of("#CD7F32") + plugin.getConfig().getString("money.name2"));
+        firstDenomItemMeta.setItemName(ChatColor.of("#33463b") + plugin.getConfig().getString("money.name1"));
+        secondDenomItemMeta.setItemName(ChatColor.of("#502B1E") + plugin.getConfig().getString("money.name2"));
         thirdDenomItemMeta.setItemName(ChatColor.of("#C0C0C0") + plugin.getConfig().getString("money.name3"));
         fourthDenomItemMeta.setItemName(ChatColor.of("#FFD700") + plugin.getConfig().getString("money.name4"));
 
