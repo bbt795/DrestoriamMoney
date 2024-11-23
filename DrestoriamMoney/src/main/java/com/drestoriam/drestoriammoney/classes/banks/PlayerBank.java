@@ -7,6 +7,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.math.BigDecimal;
+
 public class PlayerBank extends Bank implements Listener {
 
     public PlayerBank(Player owner){
@@ -17,19 +19,19 @@ public class PlayerBank extends Bank implements Listener {
     }
 
     @Override
-    public double getBalance() {
+    public BigDecimal getBankBalance() {
 
         PersistentDataContainer playerBalance = this.getOwner().getPersistentDataContainer();
         NamespacedKey key = new NamespacedKey(DrestoriamMoney.getPlugin(), "moneyBalance");
 
-        if(playerBalance.has(key, PersistentDataType.DOUBLE)) {
+        if(playerBalance.has(key, PersistentDataType.STRING)) {
 
-            return playerBalance.get(key, PersistentDataType.DOUBLE);
+            return new BigDecimal(playerBalance.get(key, PersistentDataType.STRING));
 
         } else {
 
-            playerBalance.set(key, PersistentDataType.DOUBLE, 0.0);
-            return getBalance();
+            playerBalance.set(key, PersistentDataType.STRING, "0.00");
+            return getBankBalance();
 
         }
 
@@ -37,20 +39,20 @@ public class PlayerBank extends Bank implements Listener {
     }
 
     @Override
-    public void setBalance(double balance){
+    public void setBalance(BigDecimal balance){
 
         PersistentDataContainer playerBalance = this.getOwner().getPersistentDataContainer();
         NamespacedKey key = new NamespacedKey(DrestoriamMoney.getPlugin(), "moneyBalance");
 
-        if(playerBalance.has(key, PersistentDataType.DOUBLE)){
+        if(playerBalance.has(key, PersistentDataType.STRING)){
 
-            double newBalance = getBalance() + balance;
+            BigDecimal newBalance = getBankBalance().add(balance);
 
-            playerBalance.set(key, PersistentDataType.DOUBLE, newBalance);
+            playerBalance.set(key, PersistentDataType.STRING, newBalance.toString());
 
         } else {
 
-            playerBalance.set(key, PersistentDataType.DOUBLE, 0.0);
+            playerBalance.set(key, PersistentDataType.STRING, "0.00");
             setBalance(balance);
 
         }

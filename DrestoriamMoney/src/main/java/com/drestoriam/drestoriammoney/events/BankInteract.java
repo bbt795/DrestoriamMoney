@@ -21,6 +21,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -137,10 +138,10 @@ public class BankInteract implements Listener {
                 PersistentDataContainer playerInfo = e.getPlayer().getPersistentDataContainer();
                 NamespacedKey balanceKey = new NamespacedKey(plugin, "moneyBalance");
 
-                double withdrawAmount = Double.parseDouble(e.getMessage());
-                double currentbalance = playerInfo.get(balanceKey, PersistentDataType.DOUBLE);
+                BigDecimal withdrawAmount = new BigDecimal(e.getMessage());
+                BigDecimal currentBalance = new BigDecimal(playerInfo.get(balanceKey, PersistentDataType.STRING));
 
-                if(withdrawAmount < 0.01){
+                if(withdrawAmount.compareTo(new BigDecimal("0.01")) < 0){
 
                     e.getPlayer().sendMessage(tag + ChatColor.RED + "Please enter a number greater than 1 cent.");
                     withdrawMap.remove(e.getPlayer());
@@ -149,7 +150,7 @@ public class BankInteract implements Listener {
 
                 }
 
-                if(withdrawAmount > currentbalance){
+                if(withdrawAmount.compareTo(currentBalance) > 0){
 
                     e.getPlayer().sendMessage(tag + ChatColor.RED + "Please enter a number less than or equal to your balance.");
                     withdrawMap.remove(e.getPlayer());
@@ -159,7 +160,7 @@ public class BankInteract implements Listener {
                 }
 
                 Money money = new Money(withdrawAmount);
-                playerInfo.set(balanceKey, PersistentDataType.DOUBLE, 0.01 * Math.round((currentbalance - withdrawAmount) * 100.0));
+                playerInfo.set(balanceKey, PersistentDataType.STRING, currentBalance.subtract(withdrawAmount).toString());
                 money.payOut(e.getPlayer());
                 withdrawMap.remove(e.getPlayer());
                 e.getPlayer().sendMessage(tag + ChatColor.GREEN + "Withdrawal successful!");
@@ -170,10 +171,10 @@ public class BankInteract implements Listener {
                 PersistentDataContainer playerInfo = e.getPlayer().getPersistentDataContainer();
                 NamespacedKey balanceKey = new NamespacedKey(plugin, "moneyBalance");
 
-                double depositAmount = Double.parseDouble(e.getMessage());
-                double currentbalance = playerInfo.get(balanceKey, PersistentDataType.DOUBLE);
+                BigDecimal depositAmount = new BigDecimal(e.getMessage());
+                BigDecimal currentBalance = new BigDecimal(playerInfo.get(balanceKey, PersistentDataType.STRING));
 
-                if(depositAmount < 0.01){
+                if(depositAmount.compareTo(new BigDecimal("0.01")) < 0){
 
                     e.getPlayer().sendMessage(tag + ChatColor.RED + "Please enter a number greater than 1 cent.");
                     depositMap.remove(e.getPlayer());
@@ -185,7 +186,7 @@ public class BankInteract implements Listener {
                 Inventory pInv = e.getPlayer().getInventory();
                 Money money = MoneyUtil.inventoryCoins(pInv);
 
-                if(depositAmount > money.getBalance()){
+                if(depositAmount.compareTo(money.getInventoryBalance()) > 0){
 
                     e.getPlayer().sendMessage(tag + ChatColor.RED + "You do not have the amount you're looking to deposit.");
                     depositMap.remove(e.getPlayer());
@@ -202,7 +203,7 @@ public class BankInteract implements Listener {
                 MoneyUtil.coinHelper(coinCounts[2] - money.getDenom3(), moneyStack[2], pInv);
                 MoneyUtil.coinHelper(coinCounts[3] - money.getDenom4(), moneyStack[3], pInv);
 
-                playerInfo.set(balanceKey, PersistentDataType.DOUBLE, 0.01 * Math.round((currentbalance + depositAmount) * 100));
+                playerInfo.set(balanceKey, PersistentDataType.STRING, currentBalance.add(depositAmount).toString());
                 depositMap.remove(e.getPlayer());
                 e.getPlayer().sendMessage(tag + ChatColor.GREEN + "Deposit successful!");
 

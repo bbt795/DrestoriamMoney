@@ -10,6 +10,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import java.math.BigDecimal;
+
 import static com.drestoriam.drestoriammoney.DrestoriamMoney.tag;
 
 public class CityBank implements CommandExecutor {
@@ -57,10 +59,11 @@ public class CityBank implements CommandExecutor {
 
                 case "add": {
 
-                    double amount = Double.parseDouble(args[1]);
-                    double cityBalance = config.getDouble("citybanks." + playerKingdom + ".balance");
-                    if (amount > 0) {
-                        config.set("citybanks." + playerKingdom + ".balance", amount + cityBalance);
+                    BigDecimal amount = new BigDecimal(args[1]);
+                    BigDecimal cityBalance = new BigDecimal(config.getString("citybanks." + playerKingdom + ".balance"));
+
+                    if (amount.compareTo(new BigDecimal("0")) > 0) {
+                        config.set("citybanks." + playerKingdom + ".balance", amount.add(cityBalance).toString());
                     } else {
                         player.sendMessage(tag + ChatColor.RED + "Please enter a positive or non-0 number");
                         break;
@@ -73,9 +76,10 @@ public class CityBank implements CommandExecutor {
 
                 case "taxes": {
 
-                    double amount = Double.parseDouble(args[1]);
-                    if (amount >= 0) {
-                        config.set("citybanks." + playerKingdom + ".balance", amount);
+                    BigDecimal amount = new BigDecimal(args[1]);
+
+                    if (amount.compareTo(new BigDecimal("0")) >= 0) {
+                        config.set("citybanks." + playerKingdom + ".taxes", amount.toString());
                     } else {
                         player.sendMessage(tag + ChatColor.RED + "Please enter a positive number or 0");
                         break;
@@ -99,8 +103,8 @@ public class CityBank implements CommandExecutor {
 
                     config.set("citybanks." + cityName, null);
 
-                    config.set("citybanks." + cityName + ".balance", 0.0);
-                    config.set("citybanks." + cityName + ".taxes", 0.0);
+                    config.set("citybanks." + cityName + ".balance", "0.0");
+                    config.set("citybanks." + cityName + ".taxes", "0.0");
 
                     player.sendMessage(tag + ChatColor.GREEN + "City bank successfully created");
 

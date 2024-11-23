@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Objects;
 
@@ -118,52 +119,52 @@ public class MoneyUtil {
 
     }
 
-    public static int[] makeChange(Money money, double paymentAmount){
+    public static int[] makeChange(Money money, BigDecimal paymentAmount){
 
         int coin1Count = money.getDenom1();
         int coin2Count = money.getDenom2();
         int coin3Count = money.getDenom3();
         int coin4Count = money.getDenom4();
 
-        while(paymentAmount > 0) {
+        while(paymentAmount.compareTo(new BigDecimal("0")) > 0) {
 
-            if (coin1Count * 0.01 >= paymentAmount) {
+            if (new BigDecimal(coin1Count * 0.01).compareTo(paymentAmount) >= 0) {
 
                 coin1Count -= 1;
-                paymentAmount = paymentAmount - 0.01;
+                paymentAmount = paymentAmount.subtract(new BigDecimal("0.01"));
 
 
-            } else if (coin2Count >= paymentAmount) {
+            } else if (new BigDecimal(coin2Count).compareTo(paymentAmount) >= 0) {
 
                 coin2Count -= 1;
-                paymentAmount = paymentAmount - 1;
+                paymentAmount = paymentAmount.subtract(new BigDecimal("-1"));
 
-                if(paymentAmount < 0){
+                if(paymentAmount.compareTo(new BigDecimal("0")) < 0){
 
-                    coin1Count = (int) (coin1Count + (paymentAmount * -100));
+                    coin1Count = coin1Count + (paymentAmount.multiply(new BigDecimal("-100"))).intValue();
 
                 }
 
 
-            } else if (coin3Count * 100 >= paymentAmount) {
+            } else if (new BigDecimal(coin3Count * 100).compareTo(paymentAmount) >= 0) {
 
                 coin3Count -= 1;
-                paymentAmount = paymentAmount - 100;
+                paymentAmount = paymentAmount.subtract(new BigDecimal("100"));
 
-                if(paymentAmount < 0){
+                if(paymentAmount.compareTo(new BigDecimal("0")) < 0){
 
-                    coin2Count = (int) (coin2Count + (paymentAmount * -1));
+                    coin2Count = coin2Count + (paymentAmount.multiply(new BigDecimal("-1"))).intValue();
 
                 }
 
-            } else if (coin4Count * 1000 >= paymentAmount) {
+            } else if (new BigDecimal(coin4Count * 1000).compareTo(paymentAmount) >= 0) {
 
                 coin4Count -= 1;
-                paymentAmount = paymentAmount - 1000;
+                paymentAmount = paymentAmount.subtract(new BigDecimal("1000"));
 
-                if(paymentAmount < 0){
+                if(paymentAmount.compareTo(new BigDecimal("0")) < 0){
 
-                    coin3Count = (int) (coin3Count + (paymentAmount * -0.01));
+                    coin3Count = coin3Count + (paymentAmount.multiply(new BigDecimal("-0.01"))).intValue();
 
                 }
 

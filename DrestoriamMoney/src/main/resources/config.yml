@@ -6,11 +6,11 @@ money:
 
 citybanks:
   barkhaven:
-    balance: 0.0
-    taxes: 0.0
+    balance: '0.0'
+    taxes: '0.0'
   marblehold:
-    balance: 0.0
-    taxes: 0.0
+    balance: '0.0'
+    taxes: '0.0'
 
 jobs:
   janitor:

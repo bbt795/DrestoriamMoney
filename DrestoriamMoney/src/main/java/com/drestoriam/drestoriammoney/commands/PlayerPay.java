@@ -9,6 +9,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.math.BigDecimal;
+
 import static com.drestoriam.drestoriammoney.DrestoriamMoney.tag;
 
 public class PlayerPay implements CommandExecutor {
@@ -42,14 +44,14 @@ public class PlayerPay implements CommandExecutor {
         try {
 
             PlayerBank pb = new PlayerBank(player);
-            double balance = pb.getBalance();
-            double payAmount = Double.parseDouble(args[1]);
+            BigDecimal balance = pb.getBankBalance();
+            BigDecimal payAmount = new BigDecimal(args[1]);
 
-            if(balance > payAmount){
+            if(balance.compareTo(payAmount) > 0){
 
                 Money money = new Money(payAmount);
                 money.payOut(target);
-                pb.setBalance(payAmount * -1);
+                pb.setBalance(payAmount.multiply(new BigDecimal(-1)));
 
             } else {
 

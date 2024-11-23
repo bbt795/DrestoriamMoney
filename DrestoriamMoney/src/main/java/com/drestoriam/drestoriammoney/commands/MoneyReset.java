@@ -8,6 +8,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.math.BigDecimal;
+
 import static com.drestoriam.drestoriammoney.DrestoriamMoney.tag;
 
 public class MoneyReset implements CommandExecutor {
@@ -46,7 +48,7 @@ public class MoneyReset implements CommandExecutor {
         }
 
         PlayerBank tBank = new PlayerBank(target);
-        tBank.setBalance(0.0);
+        tBank.setBalance(new BigDecimal("0.00"));
 
         player.sendMessage(tag + ChatColor.GREEN + "Successfully reset");
 

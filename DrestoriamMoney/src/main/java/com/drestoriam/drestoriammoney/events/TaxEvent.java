@@ -5,6 +5,7 @@ import com.drestoriam.drestoriammoney.classes.Money;
 import com.drestoriam.drestoriammoney.classes.banks.PlayerBank;
 import com.drestoriam.drestoriammoney.util.MoneyUtil;
 import com.mordonia.mcore.MCoreAPI;
+import com.mordonia.mcore.data.citydata.MCity;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -16,6 +17,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
+
+import java.math.BigDecimal;
 
 import static com.drestoriam.drestoriammoney.DrestoriamMoney.tag;
 
@@ -58,20 +61,33 @@ public class TaxEvent implements Listener {
 
 
         Player player = event.getPlayer();
-        String playerKingdom = this.mCoreAPI.getKingdomManager().getKingdomMap().get(player.getUniqueId().toString()).getName();
+        MCity playerKingdom = this.mCoreAPI.getKingdomManager().getKingdomMap().get(player.getUniqueId().toString());
+        String kingdomName;
 
-        double taxAmount = plugin.getConfig().getDouble("citybanks." + playerKingdom + ".taxes");
-        double cityBalance = plugin.getConfig().getDouble("citybanks." + playerKingdom + ".balance");
+        if(playerKingdom == null || playerKingdom.getName().equals("Nomad")){
+
+            playerInfo.set(taxKey, PersistentDataType.LONG, System.currentTimeMillis());
+            player.sendMessage(tag + ChatColor.BLUE + "You do not belong to a kingdom, therefore, you owe no taxes!");
+            return;
+
+        } else {
+
+            kingdomName = playerKingdom.getName();
+
+        }
+
+        BigDecimal taxAmount = new BigDecimal(plugin.getConfig().getString("citybanks." + kingdomName + ".taxes"));
+        BigDecimal cityBalance = new BigDecimal(plugin.getConfig().getString("citybanks." + kingdomName + ".balance"));
 
         PlayerBank pBank = new PlayerBank(player);
-        double balance = pBank.getBalance();
+        BigDecimal balance = pBank.getBankBalance();
 
         Inventory pInv = player.getInventory();
 
-        if(balance >= taxAmount){
+        if(balance.compareTo(taxAmount) >= 0){
 
-            pBank.setBalance(balance - taxAmount);
-            plugin.getConfig().set("citybanks." + playerKingdom + ".balance", cityBalance + taxAmount);
+            pBank.setBalance(balance.subtract(taxAmount));
+            plugin.getConfig().set("citybanks." + kingdomName + ".balance", cityBalance.add(taxAmount).toString());
             playerInfo.set(taxKey, PersistentDataType.LONG, System.currentTimeMillis());
             player.sendMessage(tag + ChatColor.GREEN + "Taxes successfully paid!");
             return;
@@ -80,7 +96,7 @@ public class TaxEvent implements Listener {
 
         Money money = MoneyUtil.inventoryCoins(pInv);
 
-        if(money.getBalance() < taxAmount){
+        if(money.getInventoryBalance().compareTo(taxAmount) < 0){
 
             player.sendMessage(tag + ChatColor.RED + "You do not have the funds to pay your taxes. OFF WITH YOUR HEAD!!!");
             return;
@@ -95,7 +111,7 @@ public class TaxEvent implements Listener {
         MoneyUtil.coinHelper(coinCounts[2] - money.getDenom3(), moneyStack[2], pInv);
         MoneyUtil.coinHelper(coinCounts[3] - money.getDenom4(), moneyStack[3], pInv);
 
-        plugin.getConfig().set("citybanks." + playerKingdom + ".balance", cityBalance + plugin.getConfig().getDouble("citybanks." + playerKingdom + ".taxes"));
+        plugin.getConfig().set("citybanks." + kingdomName + ".balance", cityBalance.add(taxAmount).toString());
         playerInfo.set(taxKey, PersistentDataType.LONG, System.currentTimeMillis());
         player.sendMessage(tag + ChatColor.GREEN + "Taxes successfully paid!");
 

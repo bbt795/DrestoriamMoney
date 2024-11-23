@@ -8,6 +8,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.math.BigDecimal;
+
 import static com.drestoriam.drestoriammoney.DrestoriamMoney.tag;
 
 public class AdminPay implements CommandExecutor {
@@ -47,7 +49,7 @@ public class AdminPay implements CommandExecutor {
 
         try{
 
-            double payAmount = Double.parseDouble(args[1]);
+            BigDecimal payAmount = new BigDecimal(args[1]);
             Money money = new Money(payAmount);
             money.payOut(target);
 

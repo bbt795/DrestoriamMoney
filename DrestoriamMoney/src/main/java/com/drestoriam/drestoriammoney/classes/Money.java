@@ -4,6 +4,7 @@ import com.drestoriam.drestoriammoney.util.MoneyUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +25,7 @@ public class Money {
 
     }
 
-    public Money(double balance){
+    public Money(BigDecimal balance){
 
         parseBalance(balance);
 
@@ -70,25 +71,25 @@ public class Money {
 
     }
 
-    public double getBalance(){
+    public BigDecimal getInventoryBalance(){
 
-        double balance = 0;
+        BigDecimal balance = new BigDecimal(0);
 
-        balance = balance + (denom1 * 0.01);
-        balance = balance + denom2;
-        balance = balance + (denom3 * 100);
-        balance = balance + (denom4 * 1000);
+        balance = balance.add(new BigDecimal("0.01").multiply(new BigDecimal(denom1)));
+        balance = balance.add(new BigDecimal(denom2));
+        balance = balance.add(new BigDecimal("100").multiply(new BigDecimal(denom3)));
+        balance = balance.add(new BigDecimal("1000").multiply(new BigDecimal(denom4)));
 
         return balance;
 
     }
 
-    public void parseBalance(double balance){
+    public void parseBalance(BigDecimal balance){
 
-        double[] deno = {0.01, 1, 100, 1000};
-        Map<Double, Integer> ans = new HashMap<>();
+        BigDecimal[] deno = {new BigDecimal("0.01"), new BigDecimal ("1"), new BigDecimal ("100"), new BigDecimal ("1000")};
+        Map<BigDecimal, Integer> ans = new HashMap<>();
 
-        for(double d: deno){
+        for(BigDecimal d: deno){
 
             ans.put(d, 0);
 
@@ -96,10 +97,9 @@ public class Money {
 
         for(int i = deno.length - 1; i >= 0; i--){
 
-            while(balance >= deno[i]){
+            while(balance.compareTo(deno[i]) >= 0){
 
-                balance -= deno[i];
-
+                balance = balance.subtract(deno[i]);
 
                 ans.put(deno[i], ans.get(deno[i]) + 1);
 

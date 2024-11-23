@@ -7,7 +7,6 @@ import com.drestoriam.drestoriammoney.events.TaxEvent;
 import com.mordonia.mcore.MCore;
 import com.mordonia.mcore.MCoreAPI;
 import org.bukkit.ChatColor;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class DrestoriamMoney extends JavaPlugin {

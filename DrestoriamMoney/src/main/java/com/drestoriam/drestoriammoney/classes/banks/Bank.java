@@ -2,11 +2,13 @@ package com.drestoriam.drestoriammoney.classes.banks;
 
 import org.bukkit.entity.Player;
 
+import java.math.BigDecimal;
+
 public class Bank {
 
     private Player owner;
     private String name;
-    private double balance;
+    private BigDecimal balance;
 
     public Player getOwner() {
         return owner;
@@ -24,11 +26,11 @@ public class Bank {
         this.name = name;
     }
 
-    public double getBalance() {
+    public BigDecimal getBankBalance() {
         return balance;
     }
 
-    public void setBalance(double balance){
+    public void setBalance(BigDecimal balance){
         this.balance = balance;
     }
 
