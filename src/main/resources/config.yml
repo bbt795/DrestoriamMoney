@@ -1,0 +1,23 @@
+money:
+  name1: 'Ent'
+  name2: 'Lor'
+  name3: 'Und'
+  name4: 'Rie'
+
+citybanks:
+  barkhaven:
+    balance: '0.0'
+    taxes: '0.0'
+  marblehold:
+    balance: '0.0'
+    taxes: '0.0'
+
+jobs:
+  janitor:
+    title: 'janitor'
+    pay:
+      1st:
+      2nd:
+      3rd:
+      4th:
+    permission: 'dremoney.jobpay.janitor'

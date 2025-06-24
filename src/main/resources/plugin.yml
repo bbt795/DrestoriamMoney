@@ -1,0 +1,34 @@
+name: DrestoriamMoney
+version: '${project.version}'
+main: com.drestoriam.drestoriammoney.DrestoriamMoney
+api-version: 1.21
+authors: [ billbominecraft ]
+depend: [MCore]
+commands:
+  jobpay:
+    description: Pays player money for job
+    usage: /jobpay
+
+  adminmoney:
+    description: Give executor a stack of each money type specified.
+    usage: /adminmoney
+
+  pay:
+    description: Pays another player an amount of your money
+    usage: /pay (username) (amount)
+
+  adminpay:
+    description: Pays another player an amount of money
+    usage: /adminpay (username) (amount)
+
+  moneyreset:
+    description: Resets provided players balance
+    usage: /moneyreset (username)
+
+  citybank:
+    description: Allows city leaders to control the city's money
+    usage: /citybank (add|taxes) (amount)
+
+  bank:
+    description: Open player bank account
+    usage: /bank
