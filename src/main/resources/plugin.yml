@@ -1,7 +1,7 @@
 name: DrestoriamMoney
 version: '${project.version}'
 main: com.drestoriam.drestoriammoney.DrestoriamMoney
-api-version: 1.21
+api-version: 1.21.1
 authors: [ billbominecraft ]
 depend: [MCore]
 commands:

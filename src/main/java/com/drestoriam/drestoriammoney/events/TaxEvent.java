@@ -19,6 +19,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 import static com.drestoriam.drestoriammoney.DrestoriamMoney.tag;
 
@@ -103,12 +104,12 @@ public class TaxEvent implements Listener {
         }
 
         int[] coinCounts = MoneyUtil.makeChange(money, taxAmount);
-        ItemStack[] moneyStack = MoneyUtil.getMoneyItems(money);
+        ArrayList<ItemStack> moneyStack = MoneyUtil.getMoneyItems(money);
 
-        MoneyUtil.coinHelper(coinCounts[0] - money.getDenom1(), moneyStack[0], pInv);
-        MoneyUtil.coinHelper(coinCounts[1] - money.getDenom2(), moneyStack[1], pInv);
-        MoneyUtil.coinHelper(coinCounts[2] - money.getDenom3(), moneyStack[2], pInv);
-        MoneyUtil.coinHelper(coinCounts[3] - money.getDenom4(), moneyStack[3], pInv);
+        MoneyUtil.coinHelper(coinCounts[0] - money.getDenom1(), moneyStack.get(0), pInv);
+        MoneyUtil.coinHelper(coinCounts[1] - money.getDenom2(), moneyStack.get(1), pInv);
+        MoneyUtil.coinHelper(coinCounts[2] - money.getDenom3(), moneyStack.get(2), pInv);
+        MoneyUtil.coinHelper(coinCounts[3] - money.getDenom4(), moneyStack.get(3), pInv);
 
         plugin.getConfig().set("citybanks." + kingdomName + ".balance", cityBalance.add(taxAmount).toString());
         playerInfo.set(taxKey, PersistentDataType.LONG, System.currentTimeMillis());

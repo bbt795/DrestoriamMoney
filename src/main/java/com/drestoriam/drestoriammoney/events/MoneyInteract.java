@@ -13,6 +13,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 
@@ -26,8 +27,8 @@ public class MoneyInteract implements Listener {
         if(player.hasPermission("dremoney.*")) return;
 
         ItemStack item = e.getCurrentItem();
-        Money money = new Money(0, 0, 0, 0);
-        ItemStack[] moneyList = MoneyUtil.getMoneyItems(money);
+        Money money = new Money(1, 1, 1, 1);
+        ArrayList<ItemStack> moneyList = MoneyUtil.getMoneyItems(money);
 
         if(item == null || item.getType().isAir()) return;
 
@@ -57,8 +58,8 @@ public class MoneyInteract implements Listener {
         if(player.hasPermission("dremoney.*")) return;
 
         ItemStack item = e.getItemDrop().getItemStack();
-        Money money = new Money(0, 0, 0, 0);
-        ItemStack[] moneyList = MoneyUtil.getMoneyItems(money);
+        Money money = new Money(1, 1, 1, 1);
+        ArrayList<ItemStack> moneyList = MoneyUtil.getMoneyItems(money);
 
         if(!item.hasItemMeta() || item.getItemMeta() == null) return;
 
@@ -84,8 +85,8 @@ public class MoneyInteract implements Listener {
         if(player.hasPermission("dremoney.*")) return;
 
         ItemStack item = e.getPlayer().getInventory().getItemInMainHand();
-        Money money = new Money(0, 0, 0, 0);
-        ItemStack[] moneyList = MoneyUtil.getMoneyItems(money);
+        Money money = new Money(1, 1, 1, 1);
+        ArrayList<ItemStack> moneyList = MoneyUtil.getMoneyItems(money);
 
         if(item.getType().isAir()) item = e.getPlayer().getInventory().getItemInOffHand();
 
