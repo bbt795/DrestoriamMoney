@@ -36,8 +36,6 @@ public final class DrestoriamMoney extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new BankInteract(), this);
         getServer().getPluginManager().registerEvents(new MoneyInteract(), this);
 
-        System.out.println("DrestoriamMoney is now enabled!");
-
     }
 
     @Override
