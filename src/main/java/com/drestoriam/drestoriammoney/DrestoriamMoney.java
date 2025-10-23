@@ -2,8 +2,10 @@ package com.drestoriam.drestoriammoney;
 
 import com.drestoriam.drestoriammoney.commands.*;
 import com.drestoriam.drestoriammoney.events.BankInteract;
+import com.drestoriam.drestoriammoney.events.ConnectionEvent;
 import com.drestoriam.drestoriammoney.events.MoneyInteract;
 import com.drestoriam.drestoriammoney.events.TaxEvent;
+import com.drestoriam.drestoriammoney.util.PlayerBankUtil;
 import com.mordonia.mcore.MCore;
 import com.mordonia.mcore.MCoreAPI;
 import org.bukkit.ChatColor;
@@ -24,17 +26,21 @@ public final class DrestoriamMoney extends JavaPlugin {
         getConfig().options().copyDefaults();
         saveDefaultConfig();
 
+        PlayerBankUtil bankUtil = new PlayerBankUtil(this);
+
         getCommand("adminmoney").setExecutor(new SpawnMoney());
         getCommand("jobpay").setExecutor(new JobPay());
         getCommand("pay").setExecutor(new PlayerPay());
         getCommand("adminpay").setExecutor(new AdminPay());
         getCommand("moneyreset").setExecutor(new MoneyReset());
         getCommand("citybank").setExecutor(new CityBank(mCoreAPI));
-        getCommand("bank").setExecutor(new BankCommand());
+        getCommand("bank").setExecutor(new BankCommand(bankUtil));
+        getCommand("taxes").setExecutor(new TaxPay(mCoreAPI));
 
         getServer().getPluginManager().registerEvents(new TaxEvent(mCoreAPI), this);
-        getServer().getPluginManager().registerEvents(new BankInteract(), this);
+        getServer().getPluginManager().registerEvents(new BankInteract(bankUtil), this);
         getServer().getPluginManager().registerEvents(new MoneyInteract(), this);
+        getServer().getPluginManager().registerEvents(new ConnectionEvent(bankUtil), this);
 
     }
 

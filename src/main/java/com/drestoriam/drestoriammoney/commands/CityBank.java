@@ -11,6 +11,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.drestoriam.drestoriammoney.DrestoriamMoney.tag;
 
@@ -41,33 +43,36 @@ public class CityBank implements CommandExecutor {
 
         }
 
-        if(args.length != 2){
-
-            player.sendMessage(tag + ChatColor.RED + "Please use /citybank add/taxes (amount)");
-            return true;
-
-        }
-
         try{
 
-            String playerKingdom = mCoreAPI.getKingdomManager().getKingdomMap().get(player.getUniqueId().toString()).getName();
+            String playerKingdom = mCoreAPI.getmPlayerManager().getPlayerMap().get(player.getUniqueId().toString()).getKingdom();
 
             Plugin plugin = DrestoriamMoney.getPlugin(DrestoriamMoney.class);
             FileConfiguration config = plugin.getConfig();
 
             switch(args[0]){
 
-                case "add": {
+                case "deposit": {
+
+                    if(args.length != 2){
+
+                        player.sendMessage(tag + ChatColor.RED + "Please use /citybank deposit (amount)");
+                        return true;
+
+                    }
 
                     BigDecimal amount = new BigDecimal(args[1]);
                     BigDecimal cityBalance = new BigDecimal(config.getString("citybanks." + playerKingdom + ".balance"));
 
                     if (amount.compareTo(new BigDecimal("0")) > 0) {
                         config.set("citybanks." + playerKingdom + ".balance", amount.add(cityBalance).toString());
+                        plugin.saveConfig();
                     } else {
                         player.sendMessage(tag + ChatColor.RED + "Please enter a positive or non-0 number");
                         break;
                     }
+
+                    //Doesn't take money???
 
                     player.sendMessage(tag + ChatColor.GREEN + "City bank balance successfully updated");
 
@@ -76,10 +81,18 @@ public class CityBank implements CommandExecutor {
 
                 case "taxes": {
 
+                    if(args.length != 2){
+
+                        player.sendMessage(tag + ChatColor.RED + "Please use /citybank taxes (amount)");
+                        return true;
+
+                    }
+
                     BigDecimal amount = new BigDecimal(args[1]);
 
                     if (amount.compareTo(new BigDecimal("0")) >= 0) {
                         config.set("citybanks." + playerKingdom + ".taxes", amount.toString());
+                        plugin.saveConfig();
                     } else {
                         player.sendMessage(tag + ChatColor.RED + "Please enter a positive number or 0");
                         break;
@@ -88,6 +101,36 @@ public class CityBank implements CommandExecutor {
                     player.sendMessage(tag + ChatColor.GREEN + "Taxes successfully updated");
 
                     break;
+                }
+
+                case "unpaid": {
+
+                    if(args.length != 1){
+
+                        player.sendMessage(tag + ChatColor.RED + "Please use /citybank unpaid");
+                        return true;
+
+                    }
+
+                    List<String> unpaidPlayers = new ArrayList<>(config.getConfigurationSection("citybanks." + playerKingdom + ".unpaid").getKeys(false));
+
+                    if(unpaidPlayers.isEmpty()){
+
+                        player.sendMessage(tag + ChatColor.GREEN + "All citizens have paid their taxes!");
+                        break;
+
+                    }
+
+                    player.sendMessage(tag + "-=+ Tax Dodgers +=-");
+
+                    for(String user : unpaidPlayers){
+
+                        player.sendMessage(ChatColor.DARK_GREEN + "- " + user);
+
+                    }
+
+                    break;
+
                 }
 
                 case "create":
@@ -99,19 +142,29 @@ public class CityBank implements CommandExecutor {
 
                     }
 
+                    if(args.length != 2){
+
+                        player.sendMessage(tag + ChatColor.RED + "Please use /citybank create (name)");
+                        return true;
+
+                    }
+
                     String cityName = args[1];
 
                     config.set("citybanks." + cityName, null);
 
                     config.set("citybanks." + cityName + ".balance", "0.0");
                     config.set("citybanks." + cityName + ".taxes", "0.0");
+                    config.set("citybanks." + cityName + ".unpaid", "[]");
+
+                    plugin.saveConfig();
 
                     player.sendMessage(tag + ChatColor.GREEN + "City bank successfully created");
 
                     break;
 
                 default:
-                    player.sendMessage(tag + ChatColor.RED + "Please use /citybank add/taxes (amount)");
+                    player.sendMessage(tag + ChatColor.RED + "Please use /citybank add/taxes/unpaid");
                     break;
 
             }

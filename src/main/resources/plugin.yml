@@ -27,8 +27,12 @@ commands:
 
   citybank:
     description: Allows city leaders to control the city's money
-    usage: /citybank (add|taxes) (amount)
+    usage: /citybank (deposit|taxes|unpaid|create)
 
   bank:
     description: Open player bank account
     usage: /bank
+
+  taxes:
+    description: Pay any missed taxes
+    usage: /taxes

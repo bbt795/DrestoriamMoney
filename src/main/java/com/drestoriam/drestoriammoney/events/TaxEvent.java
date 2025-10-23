@@ -2,10 +2,10 @@ package com.drestoriam.drestoriammoney.events;
 
 import com.drestoriam.drestoriammoney.DrestoriamMoney;
 import com.drestoriam.drestoriammoney.classes.Money;
-import com.drestoriam.drestoriammoney.classes.banks.PlayerBank;
+import com.drestoriam.drestoriammoney.classes.PlayerBank;
 import com.drestoriam.drestoriammoney.util.MoneyUtil;
 import com.mordonia.mcore.MCoreAPI;
-import com.mordonia.mcore.data.citydata.MCity;
+import com.mordonia.mcore.data.palyerdata.MPlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -20,6 +20,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.drestoriam.drestoriammoney.DrestoriamMoney.tag;
 
@@ -56,15 +57,16 @@ public class TaxEvent implements Listener {
 
         }
 
+        //604800000ms = 1 week
         if(!((System.currentTimeMillis() - taxTime) > 604800000L))
             return;
 
 
         Player player = event.getPlayer();
-        MCity playerKingdom = this.mCoreAPI.getKingdomManager().getKingdomMap().get(player.getUniqueId().toString());
+        MPlayer playerKingdom = this.mCoreAPI.getmPlayerManager().getPlayerMap().get(player.getUniqueId().toString());
         String kingdomName;
 
-        if(playerKingdom == null || playerKingdom.getName().equals("Nomad")){
+        if(playerKingdom == null || playerKingdom.getKingdom().equalsIgnoreCase("Nomad")){
 
             playerInfo.set(taxKey, PersistentDataType.LONG, System.currentTimeMillis());
             player.sendMessage(tag + ChatColor.BLUE + "You do not belong to a kingdom, therefore, you owe no taxes!");
@@ -72,12 +74,15 @@ public class TaxEvent implements Listener {
 
         } else {
 
-            kingdomName = playerKingdom.getName();
+            kingdomName = playerKingdom.getKingdom();
 
         }
 
         BigDecimal taxAmount = new BigDecimal(plugin.getConfig().getString("citybanks." + kingdomName + ".taxes"));
         BigDecimal cityBalance = new BigDecimal(plugin.getConfig().getString("citybanks." + kingdomName + ".balance"));
+
+        List<String> configList =  plugin.getConfig().getStringList("citybanks." + playerKingdom + ".unpaid");
+        String rpName = this.mCoreAPI.getmPlayerManager().getPlayerMap().get(player.getUniqueId().toString()).getmName().toString();
 
         PlayerBank pBank = new PlayerBank(player);
         BigDecimal balance = pBank.getBankBalance();
@@ -89,7 +94,15 @@ public class TaxEvent implements Listener {
             pBank.setBalance(balance.subtract(taxAmount));
             plugin.getConfig().set("citybanks." + kingdomName + ".balance", cityBalance.add(taxAmount).toString());
             playerInfo.set(taxKey, PersistentDataType.LONG, System.currentTimeMillis());
+            plugin.saveConfig();
             player.sendMessage(tag + ChatColor.GREEN + "Taxes successfully paid!");
+
+            if(configList.contains(rpName)){
+
+                DrestoriamMoney.getPlugin().getConfig().set("citybanks." + playerKingdom + ".unpaid", configList.remove(rpName));
+
+            }
+
             return;
 
         }
@@ -98,7 +111,9 @@ public class TaxEvent implements Listener {
 
         if(money.getInventoryBalance().compareTo(taxAmount) < 0){
 
-            player.sendMessage(tag + ChatColor.RED + "You do not have the funds to pay your taxes. OFF WITH YOUR HEAD!!!");
+            player.sendMessage(tag + ChatColor.RED + "You do not have the funds to pay your taxes. Your leader will be alerted.");
+            configList.add(rpName);
+            plugin.getConfig().set("citybanks." + playerKingdom + ".unpaid", configList);
             return;
 
         }
@@ -113,10 +128,16 @@ public class TaxEvent implements Listener {
 
         plugin.getConfig().set("citybanks." + kingdomName + ".balance", cityBalance.add(taxAmount).toString());
         playerInfo.set(taxKey, PersistentDataType.LONG, System.currentTimeMillis());
+
+        if(configList.contains(rpName)){
+
+            DrestoriamMoney.getPlugin().getConfig().set("citybanks." + playerKingdom + ".unpaid", configList.remove(rpName));
+
+        }
+
+        plugin.saveConfig();
         player.sendMessage(tag + ChatColor.GREEN + "Taxes successfully paid!");
 
     }
-
-
 
 }

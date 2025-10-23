@@ -8,9 +8,14 @@ citybanks:
   barkhaven:
     balance: '0.0'
     taxes: '0.0'
+    unpaid:
+      - ''
+
   marblehold:
     balance: '0.0'
     taxes: '0.0'
+    unpaid:
+      - ''
 
 jobs:
   janitor:
