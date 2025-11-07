@@ -20,6 +20,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static com.drestoriam.drestoriammoney.DrestoriamMoney.tag;
@@ -27,10 +28,12 @@ import static com.drestoriam.drestoriammoney.DrestoriamMoney.tag;
 public class TaxEvent implements Listener {
 
     private final MCoreAPI mCoreAPI;
+    private HashMap<String, PlayerBank> bankSheet;
 
-    public TaxEvent(MCoreAPI mCoreAPI){
+    public TaxEvent(MCoreAPI mCoreAPI, HashMap<String, PlayerBank> bankSheet){
 
         this.mCoreAPI = mCoreAPI;
+        this.bankSheet = bankSheet;
 
     }
 
@@ -80,14 +83,12 @@ public class TaxEvent implements Listener {
 
         BigDecimal taxAmount = new BigDecimal(plugin.getConfig().getString("citybanks." + kingdomName + ".taxes"));
         BigDecimal cityBalance = new BigDecimal(plugin.getConfig().getString("citybanks." + kingdomName + ".balance"));
-
         List<String> configList =  plugin.getConfig().getStringList("citybanks." + playerKingdom + ".unpaid");
+
         String rpName = this.mCoreAPI.getmPlayerManager().getPlayerMap().get(player.getUniqueId().toString()).getmName().toString();
 
-        PlayerBank pBank = new PlayerBank(player);
+        PlayerBank pBank = bankSheet.get(player.getUniqueId().toString());
         BigDecimal balance = pBank.getBankBalance();
-
-        Inventory pInv = player.getInventory();
 
         if(balance.compareTo(taxAmount) >= 0){
 
@@ -107,11 +108,15 @@ public class TaxEvent implements Listener {
 
         }
 
+        Inventory pInv = player.getInventory();
         Money money = MoneyUtil.inventoryCoins(pInv);
 
         if(money.getInventoryBalance().compareTo(taxAmount) < 0){
 
             player.sendMessage(tag + ChatColor.RED + "You do not have the funds to pay your taxes. Your leader will be alerted.");
+
+            if(configList.contains(rpName)) return;
+
             configList.add(rpName);
             plugin.getConfig().set("citybanks." + playerKingdom + ".unpaid", configList);
             return;

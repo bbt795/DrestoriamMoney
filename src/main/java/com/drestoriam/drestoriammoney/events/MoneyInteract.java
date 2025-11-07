@@ -40,7 +40,7 @@ public class MoneyInteract implements Listener {
 
             if (item.getType() == coin.getType() && Objects.equals(item.getItemMeta().getLore().get(0), coin.getItemMeta().getLore().get(0)) && item.getItemMeta().isUnbreakable()){
 
-                if(player.getOpenInventory().getType() == InventoryType.CRAFTING) return;
+                if(player.getOpenInventory().getType() == InventoryType.CRAFTING || e.getView().getTitle().contains("'s Bank")) return;
 
                 e.setCancelled(true);
 

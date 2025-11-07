@@ -8,15 +8,26 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import static com.drestoriam.drestoriammoney.DrestoriamMoney.tag;
 
 public class JobPay implements CommandExecutor {
+
+    private ArrayList<String> permissionList;
+
+    public JobPay(ArrayList<String> permissionList) {
+
+        this.permissionList = permissionList;
+
+    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -26,32 +37,33 @@ public class JobPay implements CommandExecutor {
             return true;
         }
 
-
         Player player = (Player) sender;
-        ArrayList<String> permissionList = new ArrayList<>();
-        Plugin plugin = DrestoriamMoney.getPlugin();
 
-        for(String key: plugin.getConfig().getConfigurationSection("jobs").getKeys(false)){
+        String playerJob = "";
 
-            for(String subKey: plugin.getConfig().getConfigurationSection("jobs." + key).getKeys(false)){
+        if(player.hasPermission("dremoney.*")){
 
-                if(subKey.equals("permission")){
+            for(PermissionAttachmentInfo permission: player.getEffectivePermissions()){
 
-                    permissionList.add(plugin.getConfig().getString("jobs." + key + "." + subKey));
+                String stringPermission = permission.getPermission();
+
+                if(stringPermission.contains("dremoney.jobpay.")){
+
+                    playerJob = stringPermission.substring(stringPermission.lastIndexOf('.') + 1);
 
                 }
 
             }
 
-        }
+        } else {
 
-        String playerJob = "";
+            for (String permission : permissionList) {
 
-        for(String permission: permissionList){
+                if (player.hasPermission(permission)) {
 
-            if(player.hasPermission(permission)){
+                    playerJob = permission.substring(permission.lastIndexOf('.') + 1);
 
-                playerJob = permission.substring(permission.lastIndexOf('.') + 1);
+                }
 
             }
 
@@ -64,10 +76,7 @@ public class JobPay implements CommandExecutor {
 
         }
 
-        String payPath = "jobs." + playerJob + ".pay.";
-
-        Money payMoney = new Money(plugin.getConfig().getInt(payPath + "1st"), plugin.getConfig().getInt(payPath + "2nd"),
-                plugin.getConfig().getInt(payPath + "3rd"), plugin.getConfig().getInt(payPath + "4th"));
+        Plugin plugin = DrestoriamMoney.getPlugin();
 
         PersistentDataContainer cooldown = player.getPersistentDataContainer();
         NamespacedKey key = new NamespacedKey(plugin, "jobcooldown");
@@ -83,10 +92,22 @@ public class JobPay implements CommandExecutor {
 
         }
 
-        cooldown.set(key, PersistentDataType.LONG, System.currentTimeMillis());
-        payMoney.payOut(player);
+        try {
 
-        player.sendMessage(tag + ChatColor.GREEN + "Successfully paid!");
+            List<Integer> pay = plugin.getConfig().getIntegerList("jobs." + playerJob + ".pay");
+            Money payMoney = new Money(pay.get(0), pay.get(1), pay.get(2), pay.get(3));
+
+            cooldown.set(key, PersistentDataType.LONG, System.currentTimeMillis());
+            payMoney.payOut(player);
+
+            player.sendMessage(tag + ChatColor.GREEN + "Successfully paid!");
+
+        } catch (IndexOutOfBoundsException e){
+
+            player.sendMessage(tag + ChatColor.RED + "Your job isn't properly registered or you don't have one!");
+            return true;
+
+        }
 
         return true;
     }
