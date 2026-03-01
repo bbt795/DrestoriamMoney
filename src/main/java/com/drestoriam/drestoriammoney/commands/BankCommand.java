@@ -3,12 +3,15 @@ package com.drestoriam.drestoriammoney.commands;
 import com.drestoriam.drestoriammoney.classes.PlayerBank;
 import com.drestoriam.drestoriammoney.events.BankInteract;
 import com.mordonia.mcore.MCoreAPI;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
+
+import static com.drestoriam.drestoriammoney.DrestoriamMoney.tag;
 
 public class BankCommand implements CommandExecutor {
 
@@ -31,6 +34,13 @@ public class BankCommand implements CommandExecutor {
         }
 
         Player player = (Player) sender;
+
+        if(args.length != 0){
+
+            player.sendMessage(tag + ChatColor.RED + "Please use /bank");
+            return true;
+
+        }
 
         BankInteract bankInteract = new BankInteract(bankSheet, mCoreAPI);
         bankInteract.openInventory(player);

@@ -40,7 +40,7 @@ public class PlayerPay implements CommandExecutor {
 
         if(args.length != 2){
 
-            player.sendMessage(tag + ChatColor.RED + "Invalid Format. Please use /pay (username) (amount)");
+            player.sendMessage(tag + ChatColor.RED + "Please use /pay (username) (amount)");
             return true;
 
         }

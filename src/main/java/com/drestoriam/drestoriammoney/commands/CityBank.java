@@ -21,7 +21,7 @@ import static com.drestoriam.drestoriammoney.DrestoriamMoney.tag;
 public class CityBank implements CommandExecutor {
 
     private final MCoreAPI mCoreAPI;
-    private HashMap<String, PlayerBank> bankSheet;
+    private final HashMap<String, PlayerBank> bankSheet;
 
     public CityBank(MCoreAPI mCoreAPI, HashMap<String, PlayerBank> bankSheet){
 
@@ -43,6 +43,13 @@ public class CityBank implements CommandExecutor {
         if(!player.hasPermission("dremoney.cityleader.*")){
 
             player.sendMessage(tag + ChatColor.RED + "You need to be a city leader to execute this command");
+            return true;
+
+        }
+
+        if(args.length < 1){
+
+            player.sendMessage(tag + ChatColor.RED + "Please use /citybank add/taxes/unpaid");
             return true;
 
         }
@@ -176,6 +183,21 @@ public class CityBank implements CommandExecutor {
                     plugin.saveConfig();
 
                     player.sendMessage(tag + ChatColor.GREEN + "City bank successfully created");
+
+                    break;
+
+                case "balance":
+
+                    if(args.length != 1){
+
+                        player.sendMessage(tag + ChatColor.RED + "Please use /citybank balance");
+                        return true;
+
+                    }
+
+                    BigDecimal balance = new BigDecimal(config.getString("citybanks." + playerKingdom + ".balance"));
+
+                    player.sendMessage(tag + "City Balance: " + ChatColor.GREEN + "$" + balance);
 
                     break;
 

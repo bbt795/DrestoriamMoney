@@ -44,9 +44,17 @@ public class TaxPay implements CommandExecutor {
         }
 
         Player player = (Player) sender;
+
+        if(args.length != 0){
+
+            player.sendMessage(tag + ChatColor.RED + "Please use /taxes");
+            return true;
+
+        }
+
         String pUUID = player.getUniqueId().toString();
         String playerKingdom = mCoreAPI.getmPlayerManager().getPlayerMap().get(pUUID).getKingdom();
-        String rpName = mCoreAPI.getmPlayerManager().getPlayerMap().get(pUUID).getmName().toString();
+        String rpName = mCoreAPI.getmPlayerManager().getPlayerMap().get(pUUID).getmName().getName().toString();
 
         DrestoriamMoney plugin = DrestoriamMoney.getPlugin();
         List<String> configList =  plugin.getConfig().getStringList("citybanks." + playerKingdom + ".unpaid");
@@ -72,10 +80,11 @@ public class TaxPay implements CommandExecutor {
             pBank.setBalance(balance.subtract(taxAmount));
             plugin.getConfig().set("citybanks." + playerKingdom + ".balance", cityBalance.add(taxAmount).toString());
             playerInfo.set(taxKey, PersistentDataType.LONG, System.currentTimeMillis());
-            plugin.saveConfig();
 
             player.sendMessage(tag + ChatColor.GREEN + "Taxes successfully paid!");
             DrestoriamMoney.getPlugin().getConfig().set("citybanks." + playerKingdom + ".unpaid", configList.remove(rpName));
+
+            plugin.saveConfig();
 
             return true;
 

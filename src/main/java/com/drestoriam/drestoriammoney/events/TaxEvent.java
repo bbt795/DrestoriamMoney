@@ -66,10 +66,10 @@ public class TaxEvent implements Listener {
 
 
         Player player = event.getPlayer();
-        MPlayer playerKingdom = this.mCoreAPI.getmPlayerManager().getPlayerMap().get(player.getUniqueId().toString());
+        MPlayer mPlayerObject = this.mCoreAPI.getmPlayerManager().getPlayerMap().get(player.getUniqueId().toString());
         String kingdomName;
 
-        if(playerKingdom == null || playerKingdom.getKingdom().equalsIgnoreCase("Nomad")){
+        if(mPlayerObject == null || mPlayerObject.getKingdom().equalsIgnoreCase("Nomad")){
 
             playerInfo.set(taxKey, PersistentDataType.LONG, System.currentTimeMillis());
             player.sendMessage(tag + ChatColor.BLUE + "You do not belong to a kingdom, therefore, you owe no taxes!");
@@ -77,15 +77,15 @@ public class TaxEvent implements Listener {
 
         } else {
 
-            kingdomName = playerKingdom.getKingdom();
+            kingdomName = mPlayerObject.getKingdom();
 
         }
 
         BigDecimal taxAmount = new BigDecimal(plugin.getConfig().getString("citybanks." + kingdomName + ".taxes"));
         BigDecimal cityBalance = new BigDecimal(plugin.getConfig().getString("citybanks." + kingdomName + ".balance"));
-        List<String> configList =  plugin.getConfig().getStringList("citybanks." + playerKingdom + ".unpaid");
+        List<String> configList =  plugin.getConfig().getStringList("citybanks." + kingdomName + ".unpaid");
 
-        String rpName = this.mCoreAPI.getmPlayerManager().getPlayerMap().get(player.getUniqueId().toString()).getmName().toString();
+        String rpName = this.mCoreAPI.getmPlayerManager().getPlayerMap().get(player.getUniqueId().toString()).getmName().getName().toString();
 
         PlayerBank pBank = bankSheet.get(player.getUniqueId().toString());
         BigDecimal balance = pBank.getBankBalance();
@@ -95,14 +95,15 @@ public class TaxEvent implements Listener {
             pBank.setBalance(balance.subtract(taxAmount));
             plugin.getConfig().set("citybanks." + kingdomName + ".balance", cityBalance.add(taxAmount).toString());
             playerInfo.set(taxKey, PersistentDataType.LONG, System.currentTimeMillis());
-            plugin.saveConfig();
             player.sendMessage(tag + ChatColor.GREEN + "Taxes successfully paid!");
 
             if(configList.contains(rpName)){
 
-                DrestoriamMoney.getPlugin().getConfig().set("citybanks." + playerKingdom + ".unpaid", configList.remove(rpName));
+                DrestoriamMoney.getPlugin().getConfig().set("citybanks." + kingdomName + ".unpaid", configList.remove(rpName));
 
             }
+
+            plugin.saveConfig();
 
             return;
 
@@ -118,7 +119,8 @@ public class TaxEvent implements Listener {
             if(configList.contains(rpName)) return;
 
             configList.add(rpName);
-            plugin.getConfig().set("citybanks." + playerKingdom + ".unpaid", configList);
+            plugin.getConfig().set("citybanks." + kingdomName + ".unpaid", configList);
+            plugin.saveConfig();
             return;
 
         }
@@ -136,7 +138,7 @@ public class TaxEvent implements Listener {
 
         if(configList.contains(rpName)){
 
-            DrestoriamMoney.getPlugin().getConfig().set("citybanks." + playerKingdom + ".unpaid", configList.remove(rpName));
+            DrestoriamMoney.getPlugin().getConfig().set("citybanks." + kingdomName + ".unpaid", configList.remove(rpName));
 
         }
 

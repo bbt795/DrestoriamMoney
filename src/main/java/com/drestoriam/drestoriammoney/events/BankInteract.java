@@ -21,10 +21,8 @@ import java.util.Objects;
 
 public class BankInteract implements Listener {
 
-    private HashMap<String, PlayerBank> bankSheet;
+    private final HashMap<String, PlayerBank> bankSheet;
     private final MCoreAPI mCoreAPI;
-    private Inventory gui;
-    private String guiTitle;
 
     public BankInteract(HashMap<String, PlayerBank> bankSheet, MCoreAPI mCoreAPI){
 
@@ -36,8 +34,8 @@ public class BankInteract implements Listener {
     public void openInventory(Player player){
 
         String playerName = mCoreAPI.getmPlayerManager().getPlayerMap().get(player.getUniqueId().toString()).getmName().getName();
-        guiTitle = playerName + "'s Bank";
-        gui = Bukkit.createInventory(null, 54, ChatColor.DARK_PURPLE + guiTitle);
+        String guiTitle = playerName + "'s Bank";
+        Inventory gui = Bukkit.createInventory(null, 54, ChatColor.DARK_PURPLE + guiTitle);
 
         PlayerBank playerBank = bankSheet.get(player.getUniqueId().toString());
 
@@ -75,7 +73,7 @@ public class BankInteract implements Listener {
 
         for(ItemStack coin: moneyList){
 
-            if(item.getType() == null || item.getType() == Material.AIR) return;
+            if(item == null || item.getType() == Material.AIR) return;
             if(item.getType() == coin.getType() && Objects.equals(item.getItemMeta().getLore().get(0), coin.getItemMeta().getLore().get(0)) && item.getItemMeta().isUnbreakable()){
 
                 return;

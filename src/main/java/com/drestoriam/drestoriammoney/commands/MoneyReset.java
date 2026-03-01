@@ -64,8 +64,6 @@ public class MoneyReset implements CommandExecutor {
         PlayerBank playerBank = bankSheet.get(target.getUniqueId().toString());
         playerBank.setBalance(new BigDecimal("0.00"));
 
-        //Need Add: Remove money from Inventory instead of Bank
-
         Inventory tInv = target.getInventory();
         Money money = MoneyUtil.inventoryCoins(tInv);
 

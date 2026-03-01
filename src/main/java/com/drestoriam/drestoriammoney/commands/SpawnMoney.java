@@ -21,6 +21,13 @@ public class SpawnMoney implements CommandExecutor {
 
         Player player = (Player) sender;
 
+        if(args.length != 0){
+
+            player.sendMessage(tag + ChatColor.RED + "Please use /adminmoney");
+            return true;
+
+        }
+
         if(player.hasPermission("dremoney.*")){
 
             Money adminPay = new Money(64, 64, 64, 64);

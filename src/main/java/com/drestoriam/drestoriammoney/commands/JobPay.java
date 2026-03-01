@@ -15,7 +15,6 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import static com.drestoriam.drestoriammoney.DrestoriamMoney.tag;
 
@@ -38,6 +37,13 @@ public class JobPay implements CommandExecutor {
         }
 
         Player player = (Player) sender;
+
+        if(args.length != 0){
+
+            player.sendMessage(tag + ChatColor.RED + "Please use /jobpay");
+            return true;
+
+        }
 
         String playerJob = "";
 
