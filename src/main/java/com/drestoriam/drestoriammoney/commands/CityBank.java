@@ -13,7 +13,6 @@ import org.bukkit.plugin.Plugin;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import static com.drestoriam.drestoriammoney.DrestoriamMoney.tag;
@@ -21,12 +20,10 @@ import static com.drestoriam.drestoriammoney.DrestoriamMoney.tag;
 public class CityBank implements CommandExecutor {
 
     private final MCoreAPI mCoreAPI;
-    private final HashMap<String, PlayerBank> bankSheet;
 
-    public CityBank(MCoreAPI mCoreAPI, HashMap<String, PlayerBank> bankSheet){
+    public CityBank(MCoreAPI mCoreAPI){
 
         this.mCoreAPI = mCoreAPI;
-        this.bankSheet = bankSheet;
 
     }
 
@@ -49,7 +46,7 @@ public class CityBank implements CommandExecutor {
 
         if(args.length < 1){
 
-            player.sendMessage(tag + ChatColor.RED + "Please use /citybank add/taxes/unpaid");
+            player.sendMessage(tag + ChatColor.RED + "Please use /citybank desposit/balance/taxes/unpaid");
             return true;
 
         }
@@ -72,7 +69,7 @@ public class CityBank implements CommandExecutor {
 
                     }
 
-                    PlayerBank playerBank = bankSheet.get(player.getUniqueId().toString());
+                    PlayerBank playerBank = DrestoriamMoney.getBankSheet().get(player.getUniqueId().toString());
                     BigDecimal bankBalance = playerBank.getBankBalance();
 
                     BigDecimal amount = new BigDecimal(args[1]);
@@ -195,14 +192,14 @@ public class CityBank implements CommandExecutor {
 
                     }
 
-                    BigDecimal balance = new BigDecimal(config.getString("citybanks." + playerKingdom + ".balance"));
+                    BigDecimal balance = new BigDecimal(config.getString("citybanks." + playerKingdom + ".balance")).setScale(2);
 
                     player.sendMessage(tag + "City Balance: " + ChatColor.GREEN + "$" + balance);
 
                     break;
 
                 default:
-                    player.sendMessage(tag + ChatColor.RED + "Please use /citybank add/taxes/unpaid");
+                    player.sendMessage(tag + ChatColor.RED + "Please use /citybank deposit/balance/taxes/unpaid");
                     break;
 
             }

@@ -13,7 +13,6 @@ import org.bukkit.plugin.Plugin;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Objects;
 
 public class MoneyUtil {
 
@@ -22,6 +21,7 @@ public class MoneyUtil {
 
         Plugin plugin = DrestoriamMoney.getPlugin(DrestoriamMoney.class);
         ArrayList<ItemStack> moneyStacks = new ArrayList<>();
+        int[] denomCount = {money.getDenom1(), money.getDenom2(), money.getDenom3(), money.getDenom4()};
 
         for(int i = 0; i < 4; i++){
 
@@ -29,9 +29,14 @@ public class MoneyUtil {
 
                 case 0:
 
-                    if(money.getDenom1() == 0) break;
+                    if(denomCount[0] == 0){
 
-                    while(money.getDenom1() > 64) {
+                        moneyStacks.add(new ItemStack(Material.AIR, 0));
+                        break;
+
+                    }
+
+                    while(denomCount[0] > 64) {
                         ItemStack firstDenom = new ItemStack(Material.BRICK, 64);
                         ItemMeta firstDenomItemMeta = firstDenom.getItemMeta();
                         firstDenomItemMeta.setCustomModelData(145);
@@ -41,10 +46,10 @@ public class MoneyUtil {
                         firstDenomItemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
                         firstDenom.setItemMeta(firstDenomItemMeta);
                         moneyStacks.add(firstDenom);
-                        money.setDenom1(money.getDenom1() - 64);
+                        denomCount[0] = denomCount[0] - 64;
                     }
 
-                    ItemStack firstDenom = new ItemStack(Material.BRICK, money.getDenom1());
+                    ItemStack firstDenom = new ItemStack(Material.BRICK, denomCount[0]);
                     ItemMeta firstDenomItemMeta = firstDenom.getItemMeta();
                     firstDenomItemMeta.setCustomModelData(145);
                     firstDenomItemMeta.setItemName(ChatColor.of("#33463b") + plugin.getConfig().getString("money.name1"));
@@ -58,9 +63,14 @@ public class MoneyUtil {
 
                 case 1:
 
-                    if(money.getDenom2() == 0) break;
+                    if(denomCount[1] == 0){
 
-                    while(money.getDenom2() > 64){
+                        moneyStacks.add(new ItemStack(Material.AIR, 0));
+                        break;
+
+                    }
+
+                    while(denomCount[1] > 64){
 
                         ItemStack secondDenom = new ItemStack(Material.BRICK, 64);
                         ItemMeta secondDenomItemMeta = secondDenom.getItemMeta();
@@ -71,11 +81,11 @@ public class MoneyUtil {
                         secondDenomItemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
                         secondDenom.setItemMeta(secondDenomItemMeta);
                         moneyStacks.add(secondDenom);
-                        money.setDenom2(money.getDenom2() - 64);
+                        denomCount[1] = denomCount[1] - 64;
 
                     }
 
-                    ItemStack secondDenom = new ItemStack(Material.BRICK,money.getDenom2());
+                    ItemStack secondDenom = new ItemStack(Material.BRICK, denomCount[1]);
                     ItemMeta secondDenomItemMeta = secondDenom.getItemMeta();
                     secondDenomItemMeta.setCustomModelData(146);
                     secondDenomItemMeta.setItemName(ChatColor.of("#502B1E") + plugin.getConfig().getString("money.name2"));
@@ -89,9 +99,14 @@ public class MoneyUtil {
 
                 case 2:
 
-                    if(money.getDenom3() == 0) break;
+                    if(denomCount[2] == 0){
 
-                    while(money.getDenom3() > 64){
+                        moneyStacks.add(new ItemStack(Material.AIR, 0));
+                        break;
+
+                    }
+
+                    while(denomCount[2] > 64){
 
                         ItemStack thirdDenom = new ItemStack(Material.BRICK, 64);
                         ItemMeta thirdDenomItemMeta = thirdDenom.getItemMeta();
@@ -102,11 +117,11 @@ public class MoneyUtil {
                         thirdDenomItemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
                         thirdDenom.setItemMeta(thirdDenomItemMeta);
                         moneyStacks.add(thirdDenom);
-                        money.setDenom3(money.getDenom3() - 64);
+                        denomCount[2] = denomCount[2] - 64;
 
                     }
 
-                    ItemStack thirdDenom = new ItemStack(Material.BRICK,money.getDenom3());
+                    ItemStack thirdDenom = new ItemStack(Material.BRICK, denomCount[2]);
                     ItemMeta thirdDenomItemMeta = thirdDenom.getItemMeta();
                     thirdDenomItemMeta.setCustomModelData(147);
                     thirdDenomItemMeta.setItemName(ChatColor.of("#C0C0C0") + plugin.getConfig().getString("money.name3"));
@@ -120,9 +135,14 @@ public class MoneyUtil {
 
                 case 3:
 
-                    if(money.getDenom4() == 0) break;
+                    if(denomCount[3] == 0){
 
-                    while(money.getDenom4() > 64){
+                        moneyStacks.add(new ItemStack(Material.AIR, 0));
+                        break;
+
+                    }
+
+                    while(denomCount[3] > 64){
 
                         ItemStack fourthDenom = new ItemStack(Material.BRICK, 64);
                         ItemMeta fourthDenomItemMeta = fourthDenom.getItemMeta();
@@ -133,11 +153,11 @@ public class MoneyUtil {
                         fourthDenomItemMeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
                         fourthDenom.setItemMeta(fourthDenomItemMeta);
                         moneyStacks.add(fourthDenom);
-                        money.setDenom4(money.getDenom4() - 64);
+                        denomCount[3] = denomCount[3] - 64;
 
                     }
 
-                    ItemStack fourthDenom = new ItemStack(Material.BRICK,money.getDenom4());
+                    ItemStack fourthDenom = new ItemStack(Material.BRICK, denomCount[3]);
                     ItemMeta fourthDenomItemMeta = fourthDenom.getItemMeta();
                     fourthDenomItemMeta.setCustomModelData(148);
                     fourthDenomItemMeta.setItemName(ChatColor.of("#FFD700") + plugin.getConfig().getString("money.name4"));
@@ -186,34 +206,26 @@ public class MoneyUtil {
 
             if(item == null || item.getType() == Material.AIR) continue;
 
-            for (int i = 0; i < moneyStack.size(); i++) {
+            if(item.getType() != Material.BRICK && !item.getItemMeta().isUnbreakable()) continue;
 
-                if(item.getType() != moneyStack.get(i).getType()) continue;
+            if(item.isSimilar(moneyStack.get(0))){
 
-                if (Objects.equals(item.getItemMeta().getLore().get(0), moneyStack.get(i).getItemMeta().getLore().get(0)) && item.getItemMeta().isUnbreakable()){
+                money.setDenom1(money.getDenom1() + item.getAmount());
 
-                    switch (i) {
+            } else if (item.isSimilar(moneyStack.get(1))){
 
-                        case 0:
-                            money.setDenom1(money.getDenom1() + item.getAmount());
-                            break;
+                money.setDenom2(money.getDenom2() + item.getAmount());
 
-                        case 1:
-                            money.setDenom2(money.getDenom2() + item.getAmount());
-                            break;
+            } else if (item.isSimilar(moneyStack.get(2))){
 
-                        case 2:
-                            money.setDenom3(money.getDenom3() + item.getAmount());
-                            break;
+                money.setDenom3(money.getDenom3() + item.getAmount());
 
-                        case 3:
-                            money.setDenom4(money.getDenom4() + item.getAmount());
-                            break;
-                    }
+            } else if (item.isSimilar(moneyStack.get(3))){
 
-                }
+                money.setDenom4(money.getDenom4() + item.getAmount());
 
             }
+
         }
 
         money.setDenom1(money.getDenom1() - 1);

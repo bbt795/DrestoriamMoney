@@ -20,7 +20,6 @@ import org.bukkit.plugin.Plugin;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import static com.drestoriam.drestoriammoney.DrestoriamMoney.tag;
@@ -28,12 +27,10 @@ import static com.drestoriam.drestoriammoney.DrestoriamMoney.tag;
 public class TaxEvent implements Listener {
 
     private final MCoreAPI mCoreAPI;
-    private HashMap<String, PlayerBank> bankSheet;
 
-    public TaxEvent(MCoreAPI mCoreAPI, HashMap<String, PlayerBank> bankSheet){
+    public TaxEvent(MCoreAPI mCoreAPI){
 
         this.mCoreAPI = mCoreAPI;
-        this.bankSheet = bankSheet;
 
     }
 
@@ -87,7 +84,7 @@ public class TaxEvent implements Listener {
 
         String rpName = this.mCoreAPI.getmPlayerManager().getPlayerMap().get(player.getUniqueId().toString()).getmName().getName().toString();
 
-        PlayerBank pBank = bankSheet.get(player.getUniqueId().toString());
+        PlayerBank pBank = DrestoriamMoney.getBankSheet().get(player.getUniqueId().toString());
         BigDecimal balance = pBank.getBankBalance();
 
         if(balance.compareTo(taxAmount) >= 0){

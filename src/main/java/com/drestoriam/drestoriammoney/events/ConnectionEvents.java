@@ -13,17 +13,8 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 
 public class ConnectionEvents implements Listener {
-
-    private HashMap<String, PlayerBank> bankSheet;
-
-    public ConnectionEvents(HashMap<String, PlayerBank> bankSheet){
-
-        this.bankSheet = bankSheet;
-
-    }
 
     @EventHandler (priority = EventPriority.LOWEST)
     public void onConnect(PlayerJoinEvent event){
@@ -43,7 +34,7 @@ public class ConnectionEvents implements Listener {
         PlayerBank playerBank = new PlayerBank(player);
         playerBank.setBalance(new BigDecimal(playerInfo.get(balancekey,PersistentDataType.STRING)));
 
-        bankSheet.put(uuid, playerBank);
+        DrestoriamMoney.getBankSheet().put(uuid, playerBank);
 
     }
 
@@ -56,12 +47,12 @@ public class ConnectionEvents implements Listener {
         PersistentDataContainer playerInfo = player.getPersistentDataContainer();
         NamespacedKey balancekey = new NamespacedKey(DrestoriamMoney.getPlugin(), "moneyBalance");
 
-        PlayerBank playerBank = bankSheet.get(uuid);
+        PlayerBank playerBank = DrestoriamMoney.getBankSheet().get(uuid);
         BigDecimal balance = playerBank.getBankBalance();
 
         playerInfo.set(balancekey, PersistentDataType.STRING , balance.toString());
 
-        bankSheet.remove(uuid);
+        DrestoriamMoney.getBankSheet().remove(uuid);
 
     }
 

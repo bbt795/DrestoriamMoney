@@ -19,7 +19,7 @@ public final class DrestoriamMoney extends JavaPlugin {
 
     private static DrestoriamMoney plugin;
     public static String tag = ChatColor.GOLD + "[" + ChatColor.DARK_GREEN + "DrestoriamMoney" + ChatColor.GOLD + "] ";
-    private final HashMap<String, PlayerBank> bankSheet = new HashMap<>();
+    private final static HashMap<String, PlayerBank> bankSheet = new HashMap<>();
     private ArrayList<String> permissionList;
 
     @Override
@@ -36,17 +36,17 @@ public final class DrestoriamMoney extends JavaPlugin {
 
         getCommand("adminmoney").setExecutor(new SpawnMoney());
         getCommand("jobpay").setExecutor(new JobPay(permissionList));
-        getCommand("pay").setExecutor(new PlayerPay(bankSheet));
+        getCommand("pay").setExecutor(new PlayerPay());
         getCommand("adminpay").setExecutor(new AdminPay());
-        getCommand("moneyreset").setExecutor(new MoneyReset(bankSheet));
-        getCommand("citybank").setExecutor(new CityBank(mCoreAPI, bankSheet));
-        getCommand("bank").setExecutor(new BankCommand(bankSheet, mCoreAPI));
-        getCommand("taxes").setExecutor(new TaxPay(mCoreAPI, bankSheet));
+        getCommand("moneyreset").setExecutor(new MoneyReset());
+        getCommand("citybank").setExecutor(new CityBank(mCoreAPI));
+        getCommand("bank").setExecutor(new BankCommand(mCoreAPI));
+        getCommand("taxes").setExecutor(new TaxPay(mCoreAPI));
 
-        getServer().getPluginManager().registerEvents(new TaxEvent(mCoreAPI, bankSheet), this);
-        getServer().getPluginManager().registerEvents(new BankInteract(bankSheet, mCoreAPI), this);
+        getServer().getPluginManager().registerEvents(new TaxEvent(mCoreAPI), this);
+        getServer().getPluginManager().registerEvents(new BankInteract(mCoreAPI), this);
         getServer().getPluginManager().registerEvents(new MoneyInteract(), this);
-        getServer().getPluginManager().registerEvents(new ConnectionEvents(bankSheet), this);
+        getServer().getPluginManager().registerEvents(new ConnectionEvents(), this);
 
     }
 
@@ -76,6 +76,10 @@ public final class DrestoriamMoney extends JavaPlugin {
 
     }
 
+    public static HashMap<String, PlayerBank> getBankSheet(){
 
+        return bankSheet;
+
+    }
 
 }

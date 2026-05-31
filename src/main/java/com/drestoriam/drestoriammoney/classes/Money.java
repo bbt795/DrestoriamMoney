@@ -5,7 +5,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -66,11 +65,13 @@ public class Money {
 
     public void payOut(Player player){
 
-        ArrayList<ItemStack> moneyArray = MoneyUtil.getMoneyItems(this);
+        ItemStack[] moneyArray = MoneyUtil.getMoneyItems(this).toArray(new ItemStack[0]);
 
-        for(ItemStack item: moneyArray){
+        Map<Integer, ItemStack> dropMap = player.getInventory().addItem(moneyArray);
 
-            player.getInventory().addItem(item);
+        for (final ItemStack item : dropMap.values()) {
+
+            player.getWorld().dropItemNaturally(player.getLocation(), item);
 
         }
     }

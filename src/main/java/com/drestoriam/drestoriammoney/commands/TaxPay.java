@@ -18,7 +18,6 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import static com.drestoriam.drestoriammoney.DrestoriamMoney.tag;
@@ -26,12 +25,10 @@ import static com.drestoriam.drestoriammoney.DrestoriamMoney.tag;
 public class TaxPay implements CommandExecutor {
 
     private MCoreAPI mCoreAPI;
-    private HashMap<String, PlayerBank> bankSheet;
 
-    public TaxPay(MCoreAPI mCoreAPI, HashMap<String, PlayerBank> bankSheet){
+    public TaxPay(MCoreAPI mCoreAPI){
 
         this.mCoreAPI = mCoreAPI;
-        this.bankSheet = bankSheet;
 
     }
 
@@ -72,7 +69,7 @@ public class TaxPay implements CommandExecutor {
         BigDecimal cityBalance = new BigDecimal(DrestoriamMoney.getPlugin().getConfig().getString("citybanks." + playerKingdom + ".balance"));
         BigDecimal taxAmount = new BigDecimal(DrestoriamMoney.getPlugin().getConfig().getString("citybanks." + playerKingdom + ".taxes"));
 
-        PlayerBank pBank = bankSheet.get(player.getUniqueId().toString());
+        PlayerBank pBank = DrestoriamMoney.getBankSheet().get(player.getUniqueId().toString());
         BigDecimal balance = pBank.getBankBalance();
 
         if(balance.compareTo(taxAmount) >= 0){

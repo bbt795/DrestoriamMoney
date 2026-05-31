@@ -1,5 +1,6 @@
 package com.drestoriam.drestoriammoney.events;
 
+import com.drestoriam.drestoriammoney.DrestoriamMoney;
 import com.drestoriam.drestoriammoney.classes.Money;
 import com.drestoriam.drestoriammoney.classes.PlayerBank;
 import com.drestoriam.drestoriammoney.util.MoneyUtil;
@@ -16,17 +17,14 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Objects;
 
 public class BankInteract implements Listener {
 
-    private final HashMap<String, PlayerBank> bankSheet;
     private final MCoreAPI mCoreAPI;
 
-    public BankInteract(HashMap<String, PlayerBank> bankSheet, MCoreAPI mCoreAPI){
+    public BankInteract(MCoreAPI mCoreAPI){
 
-        this.bankSheet = bankSheet;
         this.mCoreAPI = mCoreAPI;
 
     }
@@ -37,7 +35,7 @@ public class BankInteract implements Listener {
         String guiTitle = playerName + "'s Bank";
         Inventory gui = Bukkit.createInventory(null, 54, ChatColor.DARK_PURPLE + guiTitle);
 
-        PlayerBank playerBank = bankSheet.get(player.getUniqueId().toString());
+        PlayerBank playerBank = DrestoriamMoney.getBankSheet().get(player.getUniqueId().toString());
 
         Money playerMoney = new Money(playerBank.getBankBalance());
         ArrayList<ItemStack> moneyList = MoneyUtil.getMoneyItems(playerMoney);
@@ -57,7 +55,7 @@ public class BankInteract implements Listener {
         Inventory bank = event.getInventory();
         Money bankMoney = MoneyUtil.inventoryCoins(bank);
 
-        PlayerBank playerBank = bankSheet.get(player.getUniqueId().toString());
+        PlayerBank playerBank = DrestoriamMoney.getBankSheet().get(player.getUniqueId().toString());
         playerBank.setBalance(bankMoney.getInventoryBalance());
 
     }

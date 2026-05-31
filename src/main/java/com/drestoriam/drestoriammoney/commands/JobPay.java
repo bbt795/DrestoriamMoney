@@ -91,7 +91,39 @@ public class JobPay implements CommandExecutor {
 
             if(System.currentTimeMillis() < cooldown.get(key, PersistentDataType.LONG) + 604800000){
 
-                player.sendMessage(tag + ChatColor.RED + "Your job is currently on cooldown. Please try again later");
+                long nextPay = (cooldown.get(key, PersistentDataType.LONG) + 604800000) - System.currentTimeMillis();
+                long[] timeUnits = {0, 0, 0, 0};
+
+                while(nextPay > 0){
+
+                    if(nextPay > 86400000){
+
+                        nextPay -= 86400000;
+                        timeUnits[0] += 1;
+
+                    } else if (nextPay > 3600000){
+
+                        nextPay -= 3600000;
+                        timeUnits[1] += 1;
+
+                    } else if(nextPay > 60000){
+
+                        nextPay -= 60000;
+                        timeUnits[2] += 1;
+
+                    } else if(nextPay > 1000){
+
+                        timeUnits[3] += 1;
+
+                    } else {
+
+                        nextPay = 0;
+
+                    }
+
+                }
+
+                player.sendMessage(tag + ChatColor.RED + "Your job is currently on cooldown. Please try again in " + timeUnits[0] + " Day(s) " + timeUnits[1] + " Hour(s) " + timeUnits[2] + " Minute(s) " + timeUnits[3] + " Second(s) ");
                 return true;
 
             }

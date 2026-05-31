@@ -1,5 +1,6 @@
 package com.drestoriam.drestoriammoney.commands;
 
+import com.drestoriam.drestoriammoney.DrestoriamMoney;
 import com.drestoriam.drestoriammoney.classes.Money;
 import com.drestoriam.drestoriammoney.classes.PlayerBank;
 import com.drestoriam.drestoriammoney.util.MoneyUtil;
@@ -14,19 +15,10 @@ import org.bukkit.inventory.ItemStack;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import static com.drestoriam.drestoriammoney.DrestoriamMoney.tag;
 
 public class MoneyReset implements CommandExecutor {
-
-    private HashMap<String, PlayerBank> bankSheet;
-
-    public MoneyReset(HashMap<String, PlayerBank> bankSheet){
-
-        this.bankSheet = bankSheet;
-
-    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -61,7 +53,7 @@ public class MoneyReset implements CommandExecutor {
 
         }
 
-        PlayerBank playerBank = bankSheet.get(target.getUniqueId().toString());
+        PlayerBank playerBank = DrestoriamMoney.getBankSheet().get(target.getUniqueId().toString());
         playerBank.setBalance(new BigDecimal("0.00"));
 
         Inventory tInv = target.getInventory();
